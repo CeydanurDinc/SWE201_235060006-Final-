@@ -1,7 +1,7 @@
 # SWE201_235060006-Final-
 This project is intended as a simple sample project developed for the SWE201 term project assignment.
 
-It is a toy console application which imitates the operations of a movie tracking system.
+It is a console application which imitates the operations of a movie tracking system.
 The application allows users to add movies, track their watching status, rate watched movies, and remove movies from the system.
 
 The project consists of three main classes:
