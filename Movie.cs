@@ -1,24 +1,26 @@
-﻿public class Movie
+public class Movie
 {
-    public int Id { get; set; }
-    public string Title { get; set; }
-    public string Genre { get; set; }
-    public bool IsWatched { get; set; }
-    public int Rating { get; set; }   // 1–5
+    public int Id { get; }
+    public string Title { get; }
+    public string Genre { get; }
+    public int Rating { get; private set; }
 
     public Movie(int id, string title, string genre)
     {
         Id = id;
         Title = title;
         Genre = genre;
-        IsWatched = false;
         Rating = 0;
     }
 
-    public void MarkAsWatched(int rating)
+    public void SetRating(int rating)
     {
-        IsWatched = true;
+        if (rating < 1 || rating > 5)
+            throw new ArgumentException("Rating must be between 1 and 5.");
+
         Rating = rating;
     }
 }
+
+
 
