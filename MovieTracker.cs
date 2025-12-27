@@ -1,73 +1,88 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 public class MovieTracker
 {
+    private User currentUser;
     private List<Movie> movies = new List<Movie>();
-    private List<User> users = new List<User>();
-    private int nextMovieId = 1;   // AUTO ID
+    private int nextMovieId = 1;
+
+    // User must be created before any operation
+    public void CreateUser(string name)
+    {
+        currentUser = new User(1, name);
+        Console.WriteLine($"Welcome, {currentUser.Name}!");
+    }
+
+    public bool IsUserCreated()
+    {
+        return currentUser != null;
+    }
 
     public void AddMovie(string title, string genre)
     {
         Movie movie = new Movie(nextMovieId, title, genre);
         movies.Add(movie);
         nextMovieId++;
+
         Console.WriteLine("Movie added.");
     }
 
-    public void RemoveMovieByTitle(string title)
+    public void RemoveMovie(string title)
     {
         Movie movie = movies.Find(
             m => m.Title.Equals(title, StringComparison.OrdinalIgnoreCase)
         );
 
-        if (movie != null)
-        {
-            movies.Remove(movie);
-            Console.WriteLine("Movie removed.");
-        }
-        else
+        if (movie == null)
         {
             Console.WriteLine("Movie not found.");
-        }
-    }
-
-    public void AddUser(User user)
-    {
-        users.Add(user);
-        Console.WriteLine("User added.");
-    }
-
-    public void MarkMovieAsWatchedByTitle(string title, int rating)
-    {
-        Movie movie = movies.Find(
-            m => m.Title.Equals(title, StringComparison.OrdinalIgnoreCase)
-        );
-
-        if (movie != null)
-        {
-            movie.MarkAsWatched(rating);
-            Console.WriteLine("Movie marked as watched.");
-        }
-        else
-        {
-            Console.WriteLine("Movie not found.");
-        }
-    }
-
-    public void ListMovies()
-    {
-        if (movies.Count == 0)
-        {
-            Console.WriteLine("No movies found.");
             return;
         }
 
+        movies.Remove(movie);
+        Console.WriteLine("Movie removed.");
+    }
+
+    public void WatchMovie(string title, int rating)
+    {
+        Movie movie = movies.Find(
+            m => m.Title.Equals(title, StringComparison.OrdinalIgnoreCase)
+        );
+
+        if (movie == null)
+        {
+            Console.WriteLine("Movie not found.");
+            return;
+        }
+
+        currentUser.WatchMovie(movie, rating);
+        Console.WriteLine("Movie marked as watched.");
+    }
+
+    public void ListAllMovies()
+    {
+        if (movies.Count == 0)
+        {
+            Console.WriteLine("No movies added yet.");
+            return;
+        }
+
+        Console.WriteLine("\n--- My Movie List ---");
         foreach (Movie movie in movies)
         {
-            Console.WriteLine(
-                $"{movie.Id} - {movie.Title} | {movie.Genre} | Watched: {movie.IsWatched} | Rating: {movie.Rating}"
-            );
+            if (currentUser.HasWatched(movie))
+            {
+                Console.WriteLine(
+                    $"{movie.Title} | {movie.Genre} | Watched (Rating: {movie.Rating})"
+                );
+            }
+            else
+            {
+                Console.WriteLine(
+                    $"{movie.Title} | {movie.Genre} | Not Watched"
+                );
+            }
         }
     }
 }
